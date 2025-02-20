@@ -32,7 +32,7 @@ class FilterDesigner(QMainWindow):
         
         self.tabs = QTabWidget()
         self.design_tab = DesignTab(self)
-        self.design_tab.setObjectName("design_tab")  # Assign an object name
+        self.design_tab.setObjectName("design_tab") 
         self.tabs.addTab(self.design_tab, "Design Tab")
         self.real_time_tab = RealTimeTab(self)
         

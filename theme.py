@@ -1,4 +1,3 @@
-# gui/theme.py
 from PyQt5.QtGui import QPalette, QColor
 
 def setup_bright_theme(window):

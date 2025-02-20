@@ -169,19 +169,18 @@ class DesignTab(QWidget):
             
             # Add coefficient
             self.allpass_table.setItem(row, 0, QTableWidgetItem(str(a)))
-            
-            # Add enable checkbox
+         
             enable_checkbox = QCheckBox()
             enable_checkbox.setChecked(True)
             enable_checkbox.stateChanged.connect(self.update_response)
             self.allpass_table.setCellWidget(row, 1, enable_checkbox)
             
-            # Add preview button
+     
             preview_btn = QPushButton("Preview")
             preview_btn.clicked.connect(lambda: AllPassPreviewDialog(a, self).exec_())
             self.allpass_table.setCellWidget(row, 2, preview_btn)
             
-            # Add remove button
+          
             remove_btn = QPushButton("Remove")
             remove_btn.clicked.connect(lambda: self.remove_allpass(row))
             self.allpass_table.setCellWidget(row, 3, remove_btn)
@@ -196,14 +195,14 @@ class DesignTab(QWidget):
             if enable_checkbox.isChecked():
                 self.zeros.append(1/np.conj(a))  # Add zero
                 self.poles.append(a)  # Add pole
-                self.plot_z_plane()  # Updat
+                self.plot_z_plane()  # Update
             self.update_response()
             
         except ValueError:
            pass
     
     def remove_allpass(self, row):
-        # Get the filter being removed
+      
         removed_filter = self.allpass_filters[row]
         checkbox = self.allpass_table.cellWidget(row, 1)
         
@@ -295,14 +294,11 @@ class DesignTab(QWidget):
         self.future.clear()
 
     def export_filter_diagrams(self):
-        """
-        Export the Direct Form II and Cascade Form diagrams to a PDF file.
-        """
+        
         if not self.zeros and not self.poles:
             print("No filter design to export.")
             return
 
-        # Get filename using a save file dialog
         filename, _ = QFileDialog.getSaveFileName(self, "Export Filter Diagrams", "", "PDF Files (*.pdf)")
         if not filename:
             return
@@ -333,14 +329,10 @@ class DesignTab(QWidget):
 
 
     def draw_direct_form_ii(self, ax, b, a):
-        """
-        Draw a block diagram for Direct Form II on the given axis, similar to the provided diagram.
-        """
+       
         ax.set_title("Direct Form II Block Diagram", fontsize=16)
         ax.axis("off")
 
-        # Diagram elements
-        # Input x[n]
         ax.text(-0.1, 0.7, r"$x[n]$", fontsize=14, ha="center")
         ax.arrow(0.0, 0.7, 0.1, 0, head_width=0.03, head_length=0.03, fc="black", ec="black")
 
@@ -380,10 +372,7 @@ class DesignTab(QWidget):
 
 
     def draw_cascade_form(self,ax, sos):
-        """
-        Draw a visually improved block diagram for Cascade Form on the given axis.
-        Each second-order section (SOS) is shown with its feedforward and feedback paths.
-        """
+        
         ax.set_title("Cascade Form Block Diagram", fontsize=16)
         ax.axis('off')
 
@@ -437,26 +426,24 @@ class DesignTab(QWidget):
         # Clear the table
         self.allpass_table.setRowCount(0)
         
-        # Re-populate the table with the restored filters
+ 
         for allpass in self.allpass_filters:
             row = self.allpass_table.rowCount()
             self.allpass_table.insertRow(row)
             
             # Add coefficient
             self.allpass_table.setItem(row, 0, QTableWidgetItem(str(allpass['a'])))
-            
-            # Add enable checkbox
+    
             enable_checkbox = QCheckBox()
-            enable_checkbox.setChecked(True)  # Default enabled
+            enable_checkbox.setChecked(True)  
             enable_checkbox.stateChanged.connect(self.update_response)
             self.allpass_table.setCellWidget(row, 1, enable_checkbox)
             
-            # Add preview button
+  
             preview_btn = QPushButton("Preview")
             preview_btn.clicked.connect(lambda: AllPassPreviewDialog(allpass['a'], self).exec_())
             self.allpass_table.setCellWidget(row, 2, preview_btn)
-            
-            # Add remove button
+
             remove_btn = QPushButton("Remove")
             remove_btn.clicked.connect(lambda: self.remove_allpass(row))
             self.allpass_table.setCellWidget(row, 3, remove_btn)
@@ -595,7 +582,7 @@ class DesignTab(QWidget):
                 self.dragging_type = clicked_type
                 self.dragging_index = clicked_index
                 self.z_plane_plot.setMouseEnabled(False, False)
-            else:  # Add new zero or pole
+            else: 
                 new_point = complex(x, y)
                 if self.add_zero_checkbox.isChecked():
                     self.zeros.append(new_point)
@@ -614,7 +601,6 @@ class DesignTab(QWidget):
             mouse_point = vb.mapSceneToView(pos)
             x, y = mouse_point.x(), mouse_point.y()
 
-            # Update position of the dragged item
             if self.dragging_type == 'zero':
                 self.zeros[self.dragging_index] = complex(x, y)
             elif self.dragging_type == 'pole':
@@ -643,19 +629,17 @@ class DesignTab(QWidget):
         return None, -1
     
     def toggle_allpass_filter(self, state):
-        if state == Qt.Checked:  # Checkbox is enabled
-            # Enable the filters (re-add them to the plots or calculations if needed)
+        if state == Qt.Checked:  
             for filter_data in self.allpass_filters:
                 self.zeros.append(filter_data['zero'])
                 self.poles.append(filter_data['pole'])
-        else:  # Checkbox is disabled
-            # Disable the filters (remove them from the plots or calculations)
+        else: 
             for filter_data in self.allpass_filters:
                 if filter_data['zero'] in self.zeros:
                     self.zeros.remove(filter_data['zero'])
                 if filter_data['pole'] in self.poles:
                     self.poles.remove(filter_data['pole'])
-        self.plot_z_plane()  # Update the plot to reflect the changes
+        self.plot_z_plane()  
         self.update_response()
 
     def init_ui(self):
@@ -704,7 +688,6 @@ class DesignTab(QWidget):
         left_layout = QVBoxLayout()
         left_layout.setSpacing(10)
         
-        # Mode Selection
         mode_group = QGroupBox("Mode")
         mode_layout = QHBoxLayout()
         self.add_zero_checkbox = QCheckBox("Zero")
@@ -720,12 +703,11 @@ class DesignTab(QWidget):
         mode_layout.addWidget(self.add_pole_checkbox)
         mode_group.setLayout(mode_layout)
         
-        # Filter Library
         library_group = QGroupBox("Filter Library")
         library_layout = QVBoxLayout()
         self.filter_combo = QComboBox()
         self.filter_combo.addItems(self.filter_library.keys())
-        # Connect dropdown change event to plot directly
+
         self.filter_combo.currentIndexChanged.connect(self.load_library_filter)
         library_layout.addWidget(self.filter_combo)
         library_group.setLayout(library_layout)
@@ -741,13 +723,11 @@ class DesignTab(QWidget):
         self.allpass_combo.addItems(self.allpass_library.keys())
         allpass_layout.addWidget(self.allpass_combo)
         
-        # Custom filter section
         allpass_layout.addWidget(QLabel("Custom Filter:"))
         self.custom_a_input = QLineEdit()
         self.custom_a_input.setPlaceholderText("Enter 'a' value (e.g., 0.5 or 0.5+0.5j)")
         allpass_layout.addWidget(self.custom_a_input)
         
-        # Add filter button
         button_layout = QHBoxLayout()
         preview_btn = QPushButton("Preview")
         preview_btn.clicked.connect(self.preview_allpass_filter)
@@ -760,15 +740,14 @@ class DesignTab(QWidget):
 
         enable_checkbox = QCheckBox("Enable")
         enable_checkbox.setChecked(True)
-        enable_checkbox.stateChanged.connect(self.toggle_allpass_filter)  # Link to toggle functionality
+        enable_checkbox.stateChanged.connect(self.toggle_allpass_filter)  
         allpass_layout.addWidget(enable_checkbox)
 
         
         # Active filters table
         self.allpass_table = QTableWidget()
-        self.allpass_table.setColumnCount(3)  # Removed preview column
+        self.allpass_table.setColumnCount(3)  
         self.allpass_table.setHorizontalHeaderLabels(["a", "Enabled", "Remove"])
-        # allpass_layout.addWidget(self.allpass_table)
         
         allpass_group.setLayout(allpass_layout)
        
@@ -777,10 +756,10 @@ class DesignTab(QWidget):
 
        
 
-        # Add all components to left panel
+       
         left_layout.addWidget(mode_group)
         left_layout.addStretch()
-         # Add to main layout
+
         left_layout.addWidget(allpass_group)
         left_layout.addStretch()
         left_layout.addWidget(library_group)
@@ -809,12 +788,11 @@ class DesignTab(QWidget):
         self.setup_unit_circle()
         self.z_plane_plot.scene().sigMouseClicked.connect(self.on_mouse_click)
         self.z_plane_plot.setMouseEnabled(True, True)
-        
-        # Set background color and grid color
-        # Z-Plane Plot
-        self.z_plane_plot.setBackground('w')  # White background
-        self.z_plane_plot.getAxis('bottom').setPen('k')  # Black axis
-        self.z_plane_plot.getAxis('left').setPen('k')    # Black axis
+       
+
+        self.z_plane_plot.setBackground('w')  
+        self.z_plane_plot.getAxis('bottom').setPen('k')  
+        self.z_plane_plot.getAxis('left').setPen('k')   
         self.z_plane_plot.showGrid(x=True, y=True, alpha=0.5)
 
        
@@ -851,7 +829,8 @@ class DesignTab(QWidget):
         phase_group = QGroupBox("Phase Response")
         phase_layout = QVBoxLayout()
         self.phase_plot = pg.PlotWidget()
-          # Phase Plot
+        
+        # Phase Plot
         self.phase_plot.setBackground('w')
         self.phase_plot.getAxis('bottom').setPen('k')
         self.phase_plot.getAxis('left').setPen('k')
@@ -902,9 +881,7 @@ class AllPassPreviewDialog(QDialog):
         
         layout.addWidget(QLabel("Zero-Pole Plot"))
         layout.addWidget(z_plot)
-        # layout.addWidget(QLabel("Phase Response"))
-        # layout.addWidget(phase_plot)
-        
+       
         buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         )

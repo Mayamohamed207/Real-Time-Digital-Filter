@@ -27,13 +27,13 @@ class RealTimeTab(QWidget):
     def toggle_input_method(self):
         if self.file_input_radioButton.isChecked():
             self.mouse_pad.setEnabled(False)
-            # Only load file if radio button was just checked
+
             if self.file_input_radioButton.isChecked():
                 self.load_signal()
         else:
             self.mouse_pad.setEnabled(True)
             self.clear_graphs()
-            # Start processing automatically for touch pad
+
             if not self.processing_timer.isActive():
                 self.processing_timer.start(1000 // self.processing_speed)
 
@@ -41,13 +41,13 @@ class RealTimeTab(QWidget):
         filename, _ = QFileDialog.getOpenFileName(self, "Load Signal", "", "CSV Files (*.csv);;Text Files (*.txt)")
         if filename:
             try:
-                data = np.loadtxt(filename, skiprows=1)  # Skip header row if it exists
+                data = np.loadtxt(filename, skiprows=1)
                 self.current_input = data.tolist()
                 self.current_output = []
                 self.filtered_output = []
                 self.signal_index = 0
                 self.filter_state = None
-                # Start processing if using file input
+
                 if self.file_input_radioButton.isChecked():
                     self.processing_timer.start(1000 // self.processing_speed)
             except Exception as e:
@@ -59,7 +59,7 @@ class RealTimeTab(QWidget):
         self.filtered_output = []
         self.signal_index = 0
         self.filter_state = None
-        # Clear all plots
+
         self.input_plot.clear()
         self.filtered_plot.clear()
 
@@ -75,7 +75,6 @@ class RealTimeTab(QWidget):
             self.combined_num, self.combined_den = zpk2tf(design_tab.zeros, design_tab.poles, 1.0)
             self.filter_state = None
             
-            # Also include all-pass filters if they're enabled
             for i, allpass in enumerate(design_tab.allpass_filters):
                 checkbox = design_tab.allpass_table.cellWidget(i, 1)
                 if checkbox and checkbox.isChecked():
@@ -110,22 +109,20 @@ class RealTimeTab(QWidget):
             [input_point], zi=self.filter_state
         )
 
-        # Append the real part of the filtered output
         self.current_output.append(float(input_point))
         self.filtered_output.append(float(output_point[0].real))  # Use real part only
 
-        # Plot the results
-        display_window = 500  # Number of points to display in the plot
+        display_window = 500 
         start_idx = max(0, self.signal_index - display_window)
 
         self.input_plot.clear()
         self.filtered_plot.clear()
         self.input_plot.plot(range(start_idx, self.signal_index + 1),
                             self.current_input[start_idx:self.signal_index + 1],
-                            pen=pg.mkPen('r'))  # Red for input signal
+                            pen=pg.mkPen('r'))
         self.filtered_plot.plot(range(start_idx, self.signal_index + 1),
                                 self.filtered_output[start_idx:self.signal_index + 1],
-                                pen=pg.mkPen('b'))  # Blue for filtered signal
+                                pen=pg.mkPen('b')) 
 
         self.signal_index += 1
 

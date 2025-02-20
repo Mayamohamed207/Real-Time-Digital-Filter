@@ -1,4 +1,3 @@
-# gui/utils/filter_utils.py
 from PyQt5.QtWidgets import QFileDialog
 
 def save_filter(window):
@@ -13,7 +12,7 @@ def load_filter(window):
     filename, _ = QFileDialog.getOpenFileName(window, "Load Filter", "", "CSV Files (*.csv)")
     if filename:
         with open(filename, 'r') as f:
-            lines = f.readlines()[1:]  # Skip header
+            lines = f.readlines()[1:]  
             window.zeros = []
             window.poles = []
             for line in lines:
